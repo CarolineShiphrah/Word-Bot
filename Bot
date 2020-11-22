@@ -1,0 +1,71 @@
+import PySimpleGUI as sg
+from utils import get_meaning, get_synonyms, get_antonyms
+
+Greeting = "Hey, I'm Word Bot.\nI can help you discover words"
+
+layout = [
+    [sg.Multiline(Greeting, font=("Arial", 14), size=(70, 17), key='output')],
+    [sg.InputText("", font=("Arial", 14), size=(50, 3), key='input', enable_events=True)],
+    [sg.Button("Meaning", font=("Arial", 14), bind_return_key=True, key='meaning'),
+     sg.Button("Synonyms", font=("Arial", 14), bind_return_key=True, key='synonym'),
+     sg.Button("Antonyms", font=("Arial", 14), bind_return_key=True, key='antonym'),
+     sg.Button("Clear", font=("Arial", 14), bind_return_key=True, key='clear')]
+]
+
+
+def display_meaning(word):
+    meaning = get_meaning(word)
+    window['output'].print("The Word is ",word)
+
+    if meaning:
+        window['output'].print("Meaning is ",meaning)
+    else:
+        display_error("Word not found!!")
+
+
+def display_synonym(word):
+    synonym = get_synonyms(word)
+    window['output'].print("The Word is ",word)
+
+    if synonym:
+        window['output'].print("Synonym: ",synonym)
+    else:
+        display_error("Word not found!!")
+
+
+def display_antonym(word):
+    antonym = get_antonyms(word)
+    window['output'].print("The Word is " ,word)
+
+    if antonym:
+        window['output'].print("Antonyms: ",antonym)
+    else:
+        display_error("Word not found!!")
+
+
+def display_error(message):
+    window['output'].print("ERROR: " +message , text_color = "#3c1053")
+
+
+if __name__ == '__main__':
+    window = sg.Window('Discover Words', layout)
+
+    while True:
+        button, values = window.Read()
+
+        if button == sg.WINDOW_CLOSED:
+            break
+
+        elif button == "meaning":
+            display_meaning(values['input'])
+
+        elif button == "synonym":
+            display_synonym(values["input"])
+
+        elif button == "antonym":
+            display_antonym(values["input"])
+
+        elif button == "clear":
+            window.FindElement('output').Update(Greeting)
+
+    window.Close()
